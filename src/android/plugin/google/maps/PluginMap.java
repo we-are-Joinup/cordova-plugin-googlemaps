@@ -427,7 +427,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
               map.setOnInfoWindowLongClickListener(PluginMap.this);
               map.setOnInfoWindowCloseListener(PluginMap.this);
               map.setOnMyLocationClickListener(PluginMap.this);
-              map.setOnPoiClickListener(PluginMap.this);
+              map.setOnPoiClickListener(null);
 
               //Custom info window
               map.setInfoWindowAdapter(PluginMap.this);
