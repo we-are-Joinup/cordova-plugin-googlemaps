@@ -111,6 +111,8 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
   public static final Object semaphore = new Object();
   private int viewDepth = 0;
 
+  private boolean mapLoaded = false;
+
   private enum TEXT_STYLE_ALIGNMENTS {
     left, center, right
   }
@@ -2380,6 +2382,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
 
   @Override
   public void onMapLoaded() {
+    this.mapLoaded = true;
     this.onCameraEvent("camera_move_end");
   }
 
@@ -2789,6 +2792,10 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
    * Notify the myLocationChange event to JS
    */
   private void onCameraEvent(final String eventName) {
+    if (!this.mapLoaded) {
+      return;
+    }
+
     cordova.getActivity().runOnUiThread(new Runnable() {
       @Override
       public void run() {
