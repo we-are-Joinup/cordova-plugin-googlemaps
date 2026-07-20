@@ -199,7 +199,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
           //_saveCallbackContext = callbackContext;
           synchronized (semaphore) {
             cordova.requestPermissions(PluginMap.this, callbackContext.hashCode(), new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION
+              Manifest.permission.ACCESS_FINE_LOCATION
             });
             try {
               semaphore.wait();
@@ -484,7 +484,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
                   PluginMap.this.onCameraEvent("camera_move_end");
                   callbackContext.success();
                   //if (map.getMapType() == GoogleMap.MAP_TYPE_NONE) {
-                    PluginMap.this.onMapLoaded();
+                  PluginMap.this.onMapLoaded();
                   //}
                 }
               }
@@ -582,7 +582,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
       mCallback.success();
 
       //if (map.getMapType() == GoogleMap.MAP_TYPE_NONE) {
-        PluginMap.this.onMapLoaded();
+      PluginMap.this.onMapLoaded();
       //}
 
       //fitBounds(initCameraBounds, CAMERA_PADDING);
@@ -632,12 +632,12 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
     // Fit the camera to the cameraBounds with 20px padding.
     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(cameraBounds, padding / (int)density);
     try {
-        map.moveCamera(cameraUpdate);
-        builder.zoom(map.getCameraPosition().zoom);
-        builder.target(map.getCameraPosition().target);
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(builder.build()));
+      map.moveCamera(cameraUpdate);
+      builder.zoom(map.getCameraPosition().zoom);
+      builder.target(map.getCameraPosition().target);
+      map.moveCamera(CameraUpdateFactory.newCameraPosition(builder.build()));
     } catch (Exception e) {
-        e.printStackTrace();
+      e.printStackTrace();
     }
   }
 
@@ -723,8 +723,8 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
       public void run() {
 
         if(mapCtrl.mPluginLayout == null || mapDivId == null) {
-            callbackContext.success();
-            return;
+          callbackContext.success();
+          return;
         }
 
         RectF drawRect = mapCtrl.mPluginLayout.HTMLNodeRectFs.get(mapDivId);
@@ -939,7 +939,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
 
       try {
         if (properties.has("styles")) {
-            styles = (JSONObject) properties.getJSONObject("styles");
+          styles = (JSONObject) properties.getJSONObject("styles");
         }
       } catch (JSONException e) {
         e.printStackTrace();
@@ -1468,8 +1468,8 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
         public void run() {
           CameraPosition currentPos = map.getCameraPosition();
           CameraPosition newPosition = new CameraPosition.Builder()
-              .target(currentPos.target).bearing(currentPos.bearing)
-              .zoom(currentPos.zoom).tilt(finalTilt).build();
+            .target(currentPos.target).bearing(currentPos.bearing)
+            .zoom(currentPos.zoom).tilt(finalTilt).build();
           myMoveCamera(newPosition, callbackContext);
         }
       });
@@ -1813,9 +1813,9 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
    */
   public void myMoveCamera(CameraUpdate cameraUpdate, CallbackContext callbackContext) {
     try {
-        map.moveCamera(cameraUpdate);
+      map.moveCamera(cameraUpdate);
     } catch (Exception e) {
-        e.printStackTrace();
+      e.printStackTrace();
     }
     callbackContext.success();
   }
@@ -1839,7 +1839,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
       //_saveCallbackContext = callbackContext;
       synchronized (semaphore) {
         cordova.requestPermissions(this, callbackContext.hashCode(), new String[]{
-            Manifest.permission.ACCESS_FINE_LOCATION
+          Manifest.permission.ACCESS_FINE_LOCATION
         });
         try {
           semaphore.wait();
@@ -2110,15 +2110,15 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
                 Bitmap image2 = image;
                 if (!finalUncompress) {
                   image2 = PluginUtil.resizeBitmap(image,
-                      (int) (image2.getWidth() * density),
-                      (int) (image2.getHeight() * density));
+                    (int) (image2.getWidth() * density),
+                    (int) (image2.getHeight() * density));
                 }
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 image2.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
                 byte[] byteArray = outputStream.toByteArray();
 
                 callbackContext.success("data:image/png;base64," +
-                    Base64.encodeToString(byteArray, Base64.NO_WRAP));
+                  Base64.encodeToString(byteArray, Base64.NO_WRAP));
               }
             });
           }
@@ -2364,7 +2364,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
   public void onInfoWindowClose(Marker marker) {
     //Log.d(TAG, "--->onInfoWindowClose");
     boolean useHtmlInfoWnd = marker.getTitle() == null &&
-                             marker.getSnippet() == null;
+      marker.getSnippet() == null;
     if (useHtmlInfoWnd) {
       String markerTag = marker.getTag() + "";
       if (markerTag.startsWith("markercluster_")){
@@ -2408,7 +2408,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
     tmp = markerTag.split("-");
     String markerId = tmp[tmp.length - 1];
     String js = String.format(Locale.ENGLISH, "javascript:if('%s' in plugin.google.maps){plugin.google.maps['%s']({evtName: '%s', callback:'_onMarkerEvent', args:['%s', new plugin.google.maps.LatLng(%f, %f)]});}",
-          mapId, mapId, eventName, markerId, latLng.latitude, latLng.longitude);
+      mapId, mapId, eventName, markerId, latLng.latitude, latLng.longitude);
     jsCallback(js);
   }
   public void onClusterEvent(String eventName, Marker marker) {
@@ -2422,7 +2422,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
     String clusterId = tmp[0];
     String markerId = tmp[1];
     String js = String.format(Locale.ENGLISH, "javascript:if('%s' in plugin.google.maps){plugin.google.maps['%s']({evtName: '%s', callback:'_onClusterEvent', args:['%s', '%s', new plugin.google.maps.LatLng(%f, %f)]});}",
-            mapId, mapId, eventName, clusterId, markerId, latLng.latitude, latLng.longitude);
+      mapId, mapId, eventName, clusterId, markerId, latLng.latitude, latLng.longitude);
     jsCallback(js);
   }
   public void syncInfoWndPosition() {
@@ -2434,13 +2434,13 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
     Point point = projection.toScreenLocation(latLng);
 
     String js = String.format(Locale.ENGLISH, "javascript:if('%s' in plugin.google.maps){plugin.google.maps['%s']({evtName: 'syncPosition', callback:'_onSyncInfoWndPosition', args:[{'x': %d, 'y': %d}]});}",
-        mapId, mapId, (int)(point.x / density), (int)(point.y / density));
+      mapId, mapId, (int)(point.x / density), (int)(point.y / density));
     jsCallback(js);
   }
 
   public void onOverlayEvent(String eventName, String overlayId, LatLng point) {
     String js = String.format(Locale.ENGLISH, "javascript:if('%s' in plugin.google.maps){plugin.google.maps['%s']({evtName: '%s', callback:'_onOverlayEvent', args:['%s', new plugin.google.maps.LatLng(%f, %f)]});}",
-        mapId, mapId, eventName, overlayId, point.latitude, point.longitude);
+      mapId, mapId, eventName, overlayId, point.latitude, point.longitude);
     jsCallback(js);
   }
   public void onPolylineClick(Polyline polyline, LatLng point) {
@@ -2466,7 +2466,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
    */
   public void onMapEvent(final String eventName) {
     String js = String.format(Locale.ENGLISH, "javascript:if('%s' in plugin.google.maps){plugin.google.maps['%s']({evtName: '%s', callback:'_onMapEvent', args:[]});}",
-            mapId, mapId, eventName);
+      mapId, mapId, eventName);
     jsCallback(js);
   }
 
@@ -2477,7 +2477,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
    */
   public void onMapEvent(final String eventName, final LatLng point) {
     String js = String.format(Locale.ENGLISH, "javascript:if('%s' in plugin.google.maps){plugin.google.maps['%s']({evtName: '%s', callback:'_onMapEvent', args:[new plugin.google.maps.LatLng(%f, %f)]});}",
-        mapId, mapId, eventName, point.latitude, point.longitude);
+      mapId, mapId, eventName, point.latitude, point.longitude);
     jsCallback(js);
   }
 
@@ -2489,7 +2489,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
   private double calculateDistance(LatLng pt1, LatLng pt2){
     float[] results = new float[1];
     Location.distanceBetween(pt1.latitude, pt1.longitude,
-        pt2.latitude, pt2.longitude, results);
+      pt2.latitude, pt2.longitude, results);
     return results[0];
   }
 
@@ -2620,7 +2620,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
     double lng2 = finish.longitude * (Math.PI / 180.0);
 
     double d = 2 * Math.asin(Math.sqrt(Math.pow((Math.sin((lat1 - lat2) / 2)), 2) +
-        Math.cos(lat1) * Math.cos(lat2) * Math.pow((Math.sin((lng1 - lng2) / 2)), 2)));
+      Math.cos(lat1) * Math.cos(lat2) * Math.pow((Math.sin((lng1 - lng2) / 2)), 2)));
     List<LatLng> wayPoints = new ArrayList<LatLng>();
     double f = 0.00000000f; // fraction of the curve
     double finc = 0.01000000f; // fraction increment
@@ -2659,7 +2659,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
     // we may have to connect over 0.0 longitude
     for (int i = 0; i < wayPoints.size() - 1; ++i) {
       if (wayPoints.get(i).longitude <= 0.0f && wayPoints.get(i+1).longitude >= 0.0f ||
-          wayPoints.get(i).longitude >= 0.0f && wayPoints.get(i+1).longitude <= 0.0f) {
+        wayPoints.get(i).longitude >= 0.0f && wayPoints.get(i+1).longitude <= 0.0f) {
         if (Math.abs(wayPoints.get(i).longitude) + Math.abs(wayPoints.get(i+1).longitude) < 100.0f) {
           connect.add(wayPoints.get(i));
           connect.add(wayPoints.get(i+1));
@@ -2852,10 +2852,10 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
         }
 
         jsCallback(
-            String.format(
-                Locale.ENGLISH,
-                "javascript:if('%s' in plugin.google.maps){plugin.google.maps['%s']({evtName:'%s', callback:'_onCameraEvent', args: [%s]});}",
-                mapId, mapId, eventName, jsonStr));
+          String.format(
+            Locale.ENGLISH,
+            "javascript:if('%s' in plugin.google.maps){plugin.google.maps['%s']({evtName:'%s', callback:'_onCameraEvent', args: [%s]});}",
+            mapId, mapId, eventName, jsonStr));
       }
     });
 
@@ -2936,7 +2936,7 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
   @Override
   public void onPoiClick(PointOfInterest pointOfInterest) {
     String js = String.format(Locale.ENGLISH, "javascript:if('%s' in plugin.google.maps){plugin.google.maps['%s']({evtName: '%s', callback:'_onMapEvent', args:['%s', \"%s\", new plugin.google.maps.LatLng(%f, %f)]});}",
-    mapId, mapId, "poi_click", pointOfInterest.placeId, pointOfInterest.name, pointOfInterest.latLng.latitude, pointOfInterest.latLng.longitude);
+      mapId, mapId, "poi_click", pointOfInterest.placeId, pointOfInterest.name, pointOfInterest.latLng.latitude, pointOfInterest.latLng.longitude);
     jsCallback(js);
   }
 
@@ -2974,42 +2974,42 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
         int i, j;
         try {
           //for (i = 0; i < pluginNames.length; i++) {
-            //pluginName = pluginNames[i];
+          //pluginName = pluginNames[i];
 
-            //if (pluginName.contains("marker")) {
-            //  continue;
-            //}
-            //pluginEntry = plugins.get(pluginName);
-            //myPlugin = (MyPlugin) pluginEntry.plugin;
-            if (objects.size() > 0) {
-              keys = objects.keys.toArray(new String[objects.size()]);
-              for (j = 0; j < keys.length; j++) {
-                key = keys[j];
-                if (key.contains("marker")) {
-                  continue;
+          //if (pluginName.contains("marker")) {
+          //  continue;
+          //}
+          //pluginEntry = plugins.get(pluginName);
+          //myPlugin = (MyPlugin) pluginEntry.plugin;
+          if (objects.size() > 0) {
+            keys = objects.keys.toArray(new String[objects.size()]);
+            for (j = 0; j < keys.length; j++) {
+              key = keys[j];
+              if (key.contains("marker")) {
+                continue;
+              }
+              if (key.contains("property")) {
+                properties = (JSONObject) objects.get(key);
+                try {
+                  //Log.d("PluginMap", "-----> key = " + key + ", " + properties.toString(2));
+                  //Log.d("PluginMap", "-----> key = " + key + ", isVisible = " + properties.getBoolean("isVisible") + ", isClickable = " + properties.getBoolean("isClickable"));
+                  // skip invisible overlay
+                  if (!properties.getBoolean("isVisible") ||
+                    !properties.getBoolean("isClickable")) {
+                    continue;
+                  }
+                } catch (JSONException e) {
+                  e.printStackTrace();
                 }
-                if (key.contains("property")) {
-                  properties = (JSONObject) objects.get(key);
-                  try {
-                    //Log.d("PluginMap", "-----> key = " + key + ", " + properties.toString(2));
-                    //Log.d("PluginMap", "-----> key = " + key + ", isVisible = " + properties.getBoolean("isVisible") + ", isClickable = " + properties.getBoolean("isClickable"));
-                    // skip invisible overlay
-                    if (!properties.getBoolean("isVisible") ||
-                        !properties.getBoolean("isClickable")) {
-                      continue;
-                    }
-                  } catch (JSONException e) {
-                    e.printStackTrace();
-                  }
-                  bounds = (LatLngBounds) objects.get(key.replace("property", "bounds"));
-                  if (bounds.contains(point)) {
-                    //Log.d("PluginMap", "-----> add key = " + key.replace("property_", ""));
-                    boundsHitList.put(key, objects.get(key.replace("property_", "")));
-                  }
+                bounds = (LatLngBounds) objects.get(key.replace("property", "bounds"));
+                if (bounds.contains(point)) {
+                  //Log.d("PluginMap", "-----> add key = " + key.replace("property_", ""));
+                  boundsHitList.put(key, objects.get(key.replace("property_", "")));
+                }
 
-                }
               }
             }
+          }
 
           //}
         } catch (Exception e) {
@@ -3028,12 +3028,12 @@ public class PluginMap extends MyPlugin implements OnMarkerClickListener,
                 if (markerTag.contains("-marker_")) {
                   onClusterEvent("info_close", activeMarker);
                 }
-        //              } else {
-        //                boolean useHtmlInfoWnd = activeMarker.getTitle() == null &&
-        //                    activeMarker.getSnippet() == null;
-        //                if (useHtmlInfoWnd || activeMarker.isInfoWindowShown()) {
-        //                  onInfoWindowClose(activeMarker);
-        //                }
+                //              } else {
+                //                boolean useHtmlInfoWnd = activeMarker.getTitle() == null &&
+                //                    activeMarker.getSnippet() == null;
+                //                if (useHtmlInfoWnd || activeMarker.isInfoWindowShown()) {
+                //                  onInfoWindowClose(activeMarker);
+                //                }
               }
               activeMarker = null;
             }
