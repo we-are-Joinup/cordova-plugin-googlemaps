@@ -1350,7 +1350,10 @@ Map.prototype.addMarkerCluster = function(markerClusterOptions, callback) {
     'idxCount': positionList.length + 1,
     'maxZoomLevel': Math.min(markerClusterOptions.maxZoomLevel || 15, 18),
     'debug': markerClusterOptions.debug === true,
-    'boundsDraw': common.defaultTrueOption(markerClusterOptions.boundsDraw)
+    'boundsDraw': common.defaultTrueOption(markerClusterOptions.boundsDraw),
+    'sumLabels': markerClusterOptions.sumLabels,
+    'getIcon': markerClusterOptions.getIcon,
+    'clickCluster': markerClusterOptions.clickCluster
   }, exec);
   var markerClusterId = markerCluster.getId();
   self.OVERLAYS[markerClusterId] = markerCluster;

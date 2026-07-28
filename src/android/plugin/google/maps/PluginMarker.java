@@ -45,7 +45,7 @@ public class PluginMarker extends MyPlugin implements MyPluginInterface  {
   protected HashMap<Integer, AsyncTask> iconLoadingTasks = new HashMap<Integer, AsyncTask>();
   protected HashMap<String, Bitmap> icons = new HashMap<String, Bitmap>();
   protected final HashMap<String, Integer> iconCacheKeys = new HashMap<String, Integer>();
-  private static final Paint paint = new Paint();
+  private static final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
   private final HashMap<String, Integer> semaphoreAsync = new HashMap<String, Integer>();
   private boolean _clearDone = false;
 
@@ -413,7 +413,6 @@ public class PluginMarker extends MyPlugin implements MyPluginInterface  {
                         } else {
                           marker.setVisible(true);
                         }
-
 
                         // Animation
                         String markerAnimation = null;
@@ -1196,10 +1195,7 @@ public class PluginMarker extends MyPlugin implements MyPluginInterface  {
     image.recycle();
     image = null;
 
-    int fontSize = 10;
-    if (labelOptions.containsKey("fontSize")) {
-      fontSize = labelOptions.getInt("fontSize");
-    }
+    int fontSize = labelOptions.getInt("fontSize", 10);
     paint.setTextSize(fontSize * density);
 
     int color = Color.BLACK;
@@ -1235,6 +1231,8 @@ public class PluginMarker extends MyPlugin implements MyPluginInterface  {
     int cHeight = rect.height();
     int cWidth = rect.width();
     paint.setTextAlign(Paint.Align.LEFT);
+    // getTextBounds fail sometimes, but with the measureText before works fine
+    float measureText = paint.measureText(text);
     paint.getTextBounds(text, 0, text.length(), rect);
     float x = cWidth / 2f - rect.width() / 2f - rect.left;
     float y = cHeight / 2f + rect.height() / 2f - rect.bottom;

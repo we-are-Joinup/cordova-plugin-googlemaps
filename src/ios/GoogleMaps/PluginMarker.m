@@ -1514,6 +1514,7 @@
       } else {
         UIImage *image = [UIImage imageNamed:iconPath];
         completionBlock(YES, image);
+        return;
       }
     }
 

@@ -51,9 +51,10 @@
       return;
     }
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didRotate:)
-                                                 name:UIDeviceOrientationDidChangeNotification object:nil];
+//     Disabled on move portrait->landscape iPhone emit camera_move_end and is not needed
+//     [[NSNotificationCenter defaultCenter] addObserver:self
+//                                              selector:@selector(didRotate:)
+//                                                  name:UIDeviceOrientationDidChangeNotification object:nil];
 
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 

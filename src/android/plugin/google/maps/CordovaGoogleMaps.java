@@ -9,14 +9,12 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,14 +70,6 @@ public class CordovaGoogleMaps extends CordovaPlugin implements ViewTreeObserver
     cordova.getActivity().runOnUiThread(new Runnable() {
       @SuppressLint("NewApi")
       public void run() {
-
-        // Enable this, webView makes draw cache on the Android action bar issue.
-        //View view = webView.getView();
-        //if (Build.VERSION.SDK_INT >= 21 || "org.xwalk.core.XWalkView".equals(view.getClass().getName())){
-        //  view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        //  Log.d("Layout", "--> view =" + view.isHardwareAccelerated()); //always false
-        //}
-
 
         // ------------------------------
         // Check of Google Play Services
@@ -539,42 +529,6 @@ public class CordovaGoogleMaps extends CordovaPlugin implements ViewTreeObserver
       }
     }
 
-  }
-
- /**
-   * Called by the system when the device configuration changes while your activity is running.
-   *
-   * @param newConfig		The new device configuration
-   */
-  public void onConfigurationChanged(Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
-
-    Handler handler = new Handler();
-    handler.postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        PluginMap pluginMap;
-        Collection<PluginEntry> collection =  pluginManager.getPluginEntries();
-        for (PluginEntry entry: collection) {
-          if ("plugin.google.maps.PluginMap".equals(entry.pluginClass) && entry.plugin != null) {
-            pluginMap = (PluginMap)entry.plugin;
-            if (pluginMap.map != null) {
-
-              // Trigger the CAMERA_MOVE_END mandatory
-              pluginMap.onCameraIdle();
-            }
-          }
-        }
-      }
-    }, 500);
-    /*
-    // Checks the orientation of the screen
-    if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-      Toast.makeText(activity, "landscape", Toast.LENGTH_SHORT).show();
-    } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-      Toast.makeText(activity, "portrait", Toast.LENGTH_SHORT).show();
-    }
-    */
   }
 
 }
