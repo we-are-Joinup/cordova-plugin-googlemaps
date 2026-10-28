@@ -168,6 +168,15 @@
       self.mapCtrl.attached = YES;
       self.mapCtrl.isRenderedAtOnce = NO; //prevent unexpected animation
       [googlemaps.pluginLayer updateViewPosition:self.mapCtrl];
+
+      // Reattached with the same frame the GMSMapView is not laid out again and never calls idleAtCameraPosition,
+      // Android relayouts the map on setDiv and emits camera_move_end. Emit it to work the same way
+      // (delayed to let the js register its listeners after setDiv)
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (self.mapCtrl.attached && [self.mapCtrl.divId isEqualToString:mapDivId]) {
+          [self.mapCtrl mapView:self.mapCtrl.map idleAtCameraPosition:self.mapCtrl.map.camera];
+        }
+      });
     }
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
