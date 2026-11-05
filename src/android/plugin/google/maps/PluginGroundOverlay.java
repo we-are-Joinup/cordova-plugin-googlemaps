@@ -143,7 +143,7 @@ public class PluginGroundOverlay extends MyPlugin implements MyPluginInterface  
         public void run() {
           Set<String> keySet = pluginMap.objects.keys;
           if (keySet.size() > 0) {
-            String[] objectIdArray = keySet.toArray(new String[keySet.size()]);
+            String[] objectIdArray = keySet.toArray(new String[0]);
 
             synchronized (pluginMap.objects) {
               Bitmap image;

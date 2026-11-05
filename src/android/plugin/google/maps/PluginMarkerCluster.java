@@ -121,15 +121,7 @@ public class PluginMarkerCluster extends PluginMarker {
                   marker = null;
 
                   cacheKey = (String) pluginMap.objects.remove("marker_icon_" + markerId);
-                  if (cacheKey != null && iconCacheKeys.containsKey(cacheKey)) {
-                    int count = iconCacheKeys.get(cacheKey);
-                    if (count < 1) {
-                      iconCacheKeys.remove(cacheKey);
-                      AsyncLoadImage.removeBitmapFromMemCahce(cacheKey);
-                    } else {
-                      iconCacheKeys.put(cacheKey, count - 1);
-                    }
-                  }
+                  releaseIconCache(cacheKey);
 
 
                   pluginMap.objects.remove(markerId);

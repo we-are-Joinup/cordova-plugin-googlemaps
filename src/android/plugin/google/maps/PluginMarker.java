@@ -68,7 +68,7 @@ public class PluginMarker extends MyPlugin implements MyPluginInterface  {
       public void run() {
         Set<String> keySet = pluginMap.objects.keys;
         if (keySet.size() > 0) {
-          String[] objectIdArray = keySet.toArray(new String[keySet.size()]);
+          String[] objectIdArray = keySet.toArray(new String[0]);
 
           for (String objectId : objectIdArray) {
             if (pluginMap.objects.containsKey(objectId)) {
@@ -119,15 +119,11 @@ public class PluginMarker extends MyPlugin implements MyPluginInterface  {
       //--------------------------------------
       // Recycle bitmaps as much as possible
       //--------------------------------------
-      if (iconCacheKeys != null) {
-        if (iconCacheKeys.size() > 0) {
-          String[] cacheKeys = iconCacheKeys.keySet().toArray(new String[iconCacheKeys.size()]);
-          for (int i = 0; i < cacheKeys.length; i++) {
-            AsyncLoadImage.removeBitmapFromMemCahce(cacheKeys[i]);
-            iconCacheKeys.remove(cacheKeys[i]);
-          }
-          cacheKeys = null;
+      synchronized (iconCacheKeys) {
+        for (String cacheKey : iconCacheKeys.keySet()) {
+          AsyncLoadImage.removeBitmapFromMemCahce(cacheKey);
         }
+        iconCacheKeys.clear();
       }
       if (icons != null && icons.size() > 0) {
         String[] keys = icons.keySet().toArray(new String[icons.size()]);
@@ -151,7 +147,7 @@ public class PluginMarker extends MyPlugin implements MyPluginInterface  {
         public void run() {
           Set<String> keySet = pluginMap.objects.keys;
           if (keySet.size() > 0) {
-            String[] objectIdArray = keySet.toArray(new String[keySet.size()]);
+            String[] objectIdArray = keySet.toArray(new String[0]);
 
             for (String objectId : objectIdArray) {
               if (pluginMap.objects.containsKey(objectId)) {
@@ -846,6 +842,40 @@ public class PluginMarker extends MyPlugin implements MyPluginInterface  {
       }
     });
   }
+  //---------------------------------------------------------------------------------
+  // Use count of the cached icon images. iconCacheKeys is read and written from the UI thread (_removeMarker),
+  // the cordova thread pool (clear) and the image callbacks: always under its lock, and a key can disappear
+  // between a containsKey() and a get(), so the count is read once and checked for null.
+  //---------------------------------------------------------------------------------
+  protected void retainIconCache(String cacheKey) {
+    if (cacheKey == null) {
+      return;
+    }
+    synchronized (iconCacheKeys) {
+      Integer count = iconCacheKeys.get(cacheKey);
+      iconCacheKeys.put(cacheKey, count == null ? 1 : count + 1);
+    }
+  }
+
+  /** Drops one use of a cached icon; releases its bitmap when no marker uses it anymore */
+  protected void releaseIconCache(String cacheKey) {
+    if (cacheKey == null) {
+      return;
+    }
+    synchronized (iconCacheKeys) {
+      Integer count = iconCacheKeys.get(cacheKey);
+      if (count == null) {
+        return;
+      }
+      if (count <= 1) {
+        AsyncLoadImage.removeBitmapFromMemCahce(cacheKey);
+        iconCacheKeys.remove(cacheKey);
+      } else {
+        iconCacheKeys.put(cacheKey, count - 1);
+      }
+    }
+  }
+
   protected void _removeMarker(Marker marker) {
     if (marker == null || marker.getTag() == null) {
       return;
@@ -863,16 +893,7 @@ public class PluginMarker extends MyPlugin implements MyPluginInterface  {
     //---------------------------------------------------------------------------------
     if (pluginMap.objects.containsKey(iconCacheKey)) {
       String cacheKey = (String) pluginMap.objects.remove(iconCacheKey);
-      if (iconCacheKeys.containsKey(cacheKey)) {
-        int count = iconCacheKeys.get(cacheKey);
-        count--;
-        if (count < 1) {
-          AsyncLoadImage.removeBitmapFromMemCahce(cacheKey);
-          iconCacheKeys.remove(cacheKey);
-        } else {
-          iconCacheKeys.put(cacheKey, count);
-        }
-      }
+      releaseIconCache(cacheKey);
       pluginMap.objects.remove(iconCacheKey);
     }
   }
@@ -1053,18 +1074,7 @@ public class PluginMarker extends MyPlugin implements MyPluginInterface  {
 
           String currentCacheKey = (String) pluginMap.objects.get(markerIconTag);
           if (result.cacheKey != null && result.cacheKey.equals(currentCacheKey)) {
-            synchronized (iconCacheKeys) {
-              if (iconCacheKeys.containsKey(currentCacheKey)) {
-                int count = iconCacheKeys.get(currentCacheKey);
-                count--;
-                if (count < 1) {
-                  AsyncLoadImage.removeBitmapFromMemCahce(currentCacheKey);
-                  iconCacheKeys.remove(currentCacheKey);
-                } else {
-                  iconCacheKeys.put(currentCacheKey, count);
-                }
-              }
-            }
+            releaseIconCache(currentCacheKey);
           }
 
           if (icons.containsKey(markerIconTag)) {
@@ -1086,12 +1096,7 @@ public class PluginMarker extends MyPlugin implements MyPluginInterface  {
             }
             String hitCountKey = markerIconTag;
             pluginMap.objects.put(hitCountKey, result.cacheKey);
-            if (!iconCacheKeys.containsKey(result.cacheKey)) {
-              iconCacheKeys.put(result.cacheKey, 1);
-            } else {
-              int count = iconCacheKeys.get(result.cacheKey);
-              iconCacheKeys.put(result.cacheKey, count + 1);
-            }
+            retainIconCache(result.cacheKey);
             //Log.d(TAG, "----> " + result.cacheKey + " = " + iconCacheKeys.get(result.cacheKey));
           }
 
